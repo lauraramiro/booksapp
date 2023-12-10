@@ -29,11 +29,11 @@ export default function Bookshelf() {
 
 
 
-    const addRating = (rating, BookDetails) => {
+    const addRating = (rating, book) => {
         const readRef = ref(database, 'books/');
         get(readRef).then((snapshot) => {
           snapshot.forEach((childSnap) => {
-            if (childSnap.val().BookDetails.title === BookDetails.title) {
+            if (childSnap.val().book.title === book.title) {
               update(ref(database, 'books/' + childSnap.key + '/rating'), {
                 rating
               })
@@ -53,7 +53,7 @@ export default function Bookshelf() {
                 const readRef = ref(database, 'books/');
                 onValue(readRef, (snapshot) => {
                   snapshot.forEach((childSnap) => {
-                    if (childSnap.val().BookDetails.title === bookDetails.title) {
+                    if (childSnap.val().book.title === bookDetails.title) {
                       const deleteRef = ref(database, 'books/' + childSnap.key);
                       remove(deleteRef);
                     }
@@ -69,20 +69,20 @@ export default function Bookshelf() {
     const renderBook = ({ item }) => (
         <View>
             <Image style={{ width: 100, height: 100}}
-                source={{ uri: item.BookDetails.imageLinks?.thumbnail}}
+                source={{ uri: item.book.imageLinks?.thumbnail}}
                 //resizeMode='contain'
                 
             />
-            <Text>{item.BookDetails.title}</Text>
-            <Text>{item.BookDetails.author}</Text>
+            <Text>{item.book.title}</Text>
+            <Text>{item.book.author}</Text>
             <AirbnbRating
                 reviews={['']}
                 selectedColor="rgb(225, 161, 3)"
                 size={30}
                 defaultRating={item.rating === '' ? 0 : item.rating.rating}
-                onFinishRating={(rating) => addRating(rating, item.BookDetails)}
+                onFinishRating={(rating) => addRating(rating, item.book)}
             />
-            <Button onPress={() => deleteItem(item.BookDetails)}
+            <Button onPress={() => deleteItem(item.book)}
             >Delete book</Button>
         </View>
     )

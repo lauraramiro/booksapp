@@ -13,14 +13,14 @@ const database = getDatabase();
 export default function Bookdetails( { route } ) {
 
   const { link } = route.params;
-  const [BookDetails, setBookDetails] = useState({});
+  const [book, setBook] = useState({});
   const [exists, setExists] = useState(false);
 
   useEffect(() => {
     fetch(`${link}?key=AIzaSyDjogXo5kIAmE7IK49CnwXfXCnjp6au9uk`)
         .then(response => response.json())
         .then(data => {
-            setBookDetails(data.volumeInfo);
+            setBook(data.volumeInfo);
         })
         .catch((e) => console.error(e))
   }, []);
@@ -31,7 +31,7 @@ export default function Bookdetails( { route } ) {
     if (exists === false) {
       try{
         push(ref(database, 'books/'), {
-            BookDetails, rating: ''
+            book, rating: ''
         });
       } catch (error) {
         console.error('Firebase error: ', error.code, error.message);
@@ -51,7 +51,7 @@ export default function Bookdetails( { route } ) {
     onValue(readRef, (snapshot) => {
         snapshot.forEach((childSnap) => {
 
-            if (childSnap.val().BookDetails.title === BookDetails.title) {
+            if (childSnap.val().book.title === book.title) {
               setExists(true);
             } 
         })
@@ -66,14 +66,14 @@ export default function Bookdetails( { route } ) {
         <Surface style={styles.surface} elevation={4}>
           <Image
               style={{ width: 200, height: 200}}
-              source={{ uri: BookDetails.imageLinks?.thumbnail }}
+              source={{ uri: book.imageLinks?.thumbnail }}
               resizeMode='contain'
           />
-          <Text variant='headlineMedium'>{BookDetails.title}</Text>
-          <Text variant='titleMedium'>{BookDetails.authors?.join(', ')}</Text>
+          <Text variant='headlineMedium'>{book.title}</Text>
+          <Text variant='titleMedium'>{book.authors?.join(', ')}</Text>
           <Button mode="contained" onPress={() => addBook()}>Save book</Button>
           
-          <Text variant='bodyLarge'>{BookDetails.description}</Text>
+          <Text variant='bodyLarge'>{book.description}</Text>
         </Surface>
 
         </ScrollView>
