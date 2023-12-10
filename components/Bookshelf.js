@@ -73,7 +73,7 @@ export default function Bookshelf() {
                 //resizeMode='contain'
                 
             />
-            <Text>{item.book.title}</Text>
+            <Text variant='headlineSmall'>{item.book.title}</Text>
             <Text>{item.book.author}</Text>
             <AirbnbRating
                 reviews={['']}

@@ -30,7 +30,7 @@ export default function Search() {
     if (!input) {
       setBooks('');
     } else {
-      fetch('https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=40&key=AIzaSyDjogXo5kIAmE7IK49CnwXfXCnjp6au9uk')
+      fetch('https://www.googleapis.com/books/v1/volumes?q=' + input + '&maxResults=40&key=AIzaSyDjogXo5kIAmE7IK49CnwXfXCnjp6au9uk')
         .then(response => response.json())
         .then(data => {
           setBooks(data.items);

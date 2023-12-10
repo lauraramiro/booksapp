@@ -45,13 +45,13 @@ export default function Bookdetails( { route } ) {
 
 
   const checkBook = async () => {
-
+    const header = book.title;
     const readRef = ref(database, 'books/' );
     setExists(false);
     onValue(readRef, (snapshot) => {
         snapshot.forEach((childSnap) => {
-
-            if (childSnap.val().book.title === book.title) {
+            Alert.alert(header);
+            if (childSnap.val().book.title === header) {
               setExists(true);
             } 
         })
