@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, View, Image, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, Alert, Animated } from 'react-native';
 import { Text, Surface, Button } from 'react-native-paper';
 import firebaseConfig from './FirebaseConfig.js';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue, push, where, query } from "firebase/database";
+import { getDatabase, ref, get, push, remove } from "firebase/database";
 
 
 const booksapp = initializeApp(firebaseConfig);
 const database = getDatabase();
 
 
+
 export default function Bookdetails( { route } ) {
 
   const { link } = route.params;
   const [book, setBook] = useState({});
-  const [exists, setExists] = useState(false);
+  //const [exists, setExists] = useState(false);
+
 
   useEffect(() => {
     fetch(`${link}?key=AIzaSyDjogXo5kIAmE7IK49CnwXfXCnjp6au9uk`)
@@ -26,39 +28,38 @@ export default function Bookdetails( { route } ) {
   }, []);
 
 
-  const addBook = async () => {
-   await checkBook(book.title);
-
-    if (exists === false) {
-      try{
-        const title = book.title;
-        push(ref(database, 'books/'), {
-            book, title, rating: ''
-        });
-      } catch (error) {
-        console.error('Firebase error: ', error.code, error.message);
-      }
-      Alert.alert('Book saved!');
-    } else {
-        Alert.alert('Book Is Already Saved');
-    }
+  const addBook = async() => {
+    await checkBook();
+    /*
+    if (exists === 'exists') {
+      Alert.alert('Book Is Already Saved');
+    } else {*/
+        try{
+          const title = book.title;
+          push(ref(database, 'books/'), {
+              book, title, rating: ''
+          });
+        } catch (error) {
+          console.error('Firebase error: ', error.code, error.message);
+        }
+        Alert.alert('Book saved!');  
+        
+    //}
 
 };
 
 
-  const checkBook = (header) => {
-    setExists(false);
-    const readRef = ref(database, 'books/' );
-
-    onValue(readRef, (snapshot) => {
-        snapshot.forEach((childSnap) => {
-            Alert.alert(header);
-            if (childSnap.val().title === header) {
-              setExists(true);
+  const checkBook = () => {
+    const readRef = ref(database, 'books/');
+        get(readRef).then((snapshot) => {
+          snapshot.forEach((childSnap) => {
+            if (childSnap.val().title === book.title) {
+              const deleteRef = ref(database, 'books/' + childSnap.key);
+              remove(deleteRef);
             } 
+          })          
         })
-    })
-  }
+  };
 
 
     return (

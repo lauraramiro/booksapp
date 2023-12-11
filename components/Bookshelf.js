@@ -49,18 +49,14 @@ export default function Bookshelf() {
               text: 'Cancel',
               style: 'cancel',
             },
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
+            {text: 'OK', onPress: () => handleDelete(bookDetails)},
           ]);
       
       }
 
-
       const handleDelete = (bookDetails) => {
-        
         const readRef = ref(database, 'books/');
-
-
-        onValue(readRef, (snapshot) => {
+        get(readRef).then((snapshot) => {
             snapshot.forEach((childSnap) => {
                 if (childSnap.val().title === bookDetails.title) {
                 const deleteRef = ref(database, 'books/' + childSnap.key);
