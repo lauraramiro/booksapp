@@ -44,34 +44,34 @@ export default function Bookshelf() {
 
 
       const deleteItem = (bookDetails) => {
-        Alert.alert(
-          'Remove book from saved?',
-          [
-            { text: 'NO', style: 'cancel' },
-            {
-              text: 'YES', onPress: () => {
-                const readRef = ref(database, 'books/');
+        Alert.alert('Remove book from saved?', 'The deletion will be permanent', 
+        [{
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+      
+      }
+
+      const handleDelete = (bookDetails) => {
+        
+        const readRef = ref(database, 'books/');
                 onValue(readRef, (snapshot) => {
                   snapshot.forEach((childSnap) => {
-                    if (childSnap.val().book.title === bookDetails.title) {
+                    if (childSnap.val().title === bookDetails.title) {
                       const deleteRef = ref(database, 'books/' + childSnap.key);
                       remove(deleteRef);
                     }
                   })
                 })
-              }
-            },
-          ]
-        )
+              
       }
-
 
     const renderBook = ({ item }) => (
         <View>
             <Image style={{ width: 100, height: 100}}
-                source={{ uri: item.book.imageLinks?.thumbnail}}
-                //resizeMode='contain'
-                
+                source={{ uri: item.book.imageLinks?.thumbnail}}                
             />
             <Text variant='headlineSmall'>{item.book.title}</Text>
             <Text>{item.book.author}</Text>
@@ -82,8 +82,7 @@ export default function Bookshelf() {
                 defaultRating={item.rating === '' ? 0 : item.rating.rating}
                 onFinishRating={(rating) => addRating(rating, item.book)}
             />
-            <Button onPress={() => deleteItem(item.book)}
-            >Delete book</Button>
+            <Button onPress={() => deleteItem(item.book)}>Delete book</Button>
         </View>
     )
 

@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View, Image, Alert } from 'react-native';
 import { Text, Surface, Button } from 'react-native-paper';
 import firebaseConfig from './FirebaseConfig.js';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue, push } from "firebase/database";
+import { getDatabase, ref, onValue, push, where, query } from "firebase/database";
 
 
 const booksapp = initializeApp(firebaseConfig);
@@ -30,8 +30,9 @@ export default function Bookdetails( { route } ) {
    await checkBook();
     if (exists === false) {
       try{
+        const title = book.title;
         push(ref(database, 'books/'), {
-            book, rating: ''
+            book, title, rating: ''
         });
       } catch (error) {
         console.error('Firebase error: ', error.code, error.message);
@@ -44,19 +45,19 @@ export default function Bookdetails( { route } ) {
 };
 
 
-  const checkBook = async () => {
+  const checkBook = () => {
     const header = book.title;
-    const readRef = ref(database, 'books/' );
     setExists(false);
+    const readRef = ref(database, 'books/' );
+
     onValue(readRef, (snapshot) => {
         snapshot.forEach((childSnap) => {
             Alert.alert(header);
-            if (childSnap.val().book.title === header) {
+            if (childSnap.val().title === header) {
               setExists(true);
             } 
         })
     })
-
   }
 
 
@@ -75,7 +76,6 @@ export default function Bookdetails( { route } ) {
           
           <Text variant='bodyLarge'>{book.description}</Text>
         </Surface>
-
         </ScrollView>
     </View>
     );
