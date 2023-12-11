@@ -39,7 +39,7 @@ export default function App() {
             
             if (route.name == 'Search') {
               iconName = 'book-search';
-            } else if (route.name == 'Bookshelves') {
+            } else if (route.name == 'Bookshelf') {
               iconName = 'bookshelf';
             }
 
@@ -54,7 +54,7 @@ export default function App() {
           component={StackNavigation}
         />
         <Tab.Screen
-          name="Bookshelves"
+          name="Bookshelf"
           component={Bookshelf}
         />
       </Tab.Navigator>

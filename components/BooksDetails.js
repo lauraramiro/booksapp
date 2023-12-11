@@ -27,7 +27,8 @@ export default function Bookdetails( { route } ) {
 
 
   const addBook = async () => {
-   await checkBook();
+   await checkBook(book.title);
+
     if (exists === false) {
       try{
         const title = book.title;
@@ -45,8 +46,7 @@ export default function Bookdetails( { route } ) {
 };
 
 
-  const checkBook = () => {
-    const header = book.title;
+  const checkBook = (header) => {
     setExists(false);
     const readRef = ref(database, 'books/' );
 
@@ -72,6 +72,7 @@ export default function Bookdetails( { route } ) {
           />
           <Text variant='headlineMedium'>{book.title}</Text>
           <Text variant='titleMedium'>{book.authors?.join(', ')}</Text>
+
           <Button mode="contained" onPress={() => addBook()}>Save book</Button>
           
           <Text variant='bodyLarge'>{book.description}</Text>

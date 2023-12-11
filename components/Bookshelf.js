@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, FlatList, Image, Alert } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { Text, Button, Surface, Card } from 'react-native-paper';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, get, remove, update } from "firebase/database";
 import { AirbnbRating } from 'react-native-ratings';
@@ -54,35 +54,44 @@ export default function Bookshelf() {
       
       }
 
+
       const handleDelete = (bookDetails) => {
         
         const readRef = ref(database, 'books/');
-                onValue(readRef, (snapshot) => {
-                  snapshot.forEach((childSnap) => {
-                    if (childSnap.val().title === bookDetails.title) {
-                      const deleteRef = ref(database, 'books/' + childSnap.key);
-                      remove(deleteRef);
-                    }
-                  })
-                })
+
+
+        onValue(readRef, (snapshot) => {
+            snapshot.forEach((childSnap) => {
+                if (childSnap.val().title === bookDetails.title) {
+                const deleteRef = ref(database, 'books/' + childSnap.key);
+                remove(deleteRef);
+                }
+            })
+        })
               
       }
 
     const renderBook = ({ item }) => (
-        <View>
-            <Image style={{ width: 100, height: 100}}
+        <View style={{ flexDirection: 'row', marginTop: '3%', marginBottom: '5%'}}>   
+            <Image 
                 source={{ uri: item.book.imageLinks?.thumbnail}}                
-            />
-            <Text variant='headlineSmall'>{item.book.title}</Text>
-            <Text>{item.book.author}</Text>
-            <AirbnbRating
-                reviews={['']}
-                selectedColor="rgb(225, 161, 3)"
-                size={30}
-                defaultRating={item.rating === '' ? 0 : item.rating.rating}
-                onFinishRating={(rating) => addRating(rating, item.book)}
-            />
-            <Button onPress={() => deleteItem(item.book)}>Delete book</Button>
+                style = {{ width: 100, height: 130, marginRight: 10 }}
+            />  
+            <View style={{alignItems: 'flex-start', marginRight: '35%', marginLeft: '5%'}}>
+                <Text variant='titleMedium'>{item.book.title}</Text>
+                <Text variant='bodyLarge'>{item.book.authors?.join(', ')}</Text>
+                <AirbnbRating
+                    reviews={['']}
+                    selectedColor="rgb(225, 161, 3)"
+                    size={30}
+                    defaultRating={item.rating === '' ? 0 : item.rating.rating}
+                    onFinishRating={(rating) => addRating(rating, item.book)}
+                />
+                <Button mode='contained' onPress={() => deleteItem(item.book)}>Delete book</Button>
+
+            </View>
+                                                  
+            
         </View>
     )
 

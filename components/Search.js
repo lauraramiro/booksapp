@@ -1,15 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, Image, Alert } from 'react-native';
-//import { SearchBar } from 'react-native-elements';
+import { View, FlatList } from 'react-native';
 import { useState } from 'react';
-import { Card, PaperProvider, Paragraph, Searchbar, Title, Button, IconButton } from 'react-native-paper';
-import styles from './Styles';
-import db from '../App.js'; 
-import { getDatabase, ref, push, onValue, set, remove } from 'firebase/database';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Card, Paragraph, Searchbar, Title, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { BookNav } from './BooksDetails.js';
-import Bookdetails from './BooksDetails.js';
 
 
 export default function Search() {
@@ -19,12 +12,7 @@ export default function Search() {
   const [input, setInput] = useState('');
   const [books, setBooks] = useState([]);
   const [numBooks, setNumBooks] = useState('');
-  const [bookToSave, setBookToSave] = useState({
-    title: '',
-    authors: '',
-    abstract: '',
-    key: ''
-  });
+
 
   useEffect(() => {
     if (!input) {
@@ -44,22 +32,18 @@ export default function Search() {
   }, [input]);
 
 
+  const renderListHeader = () => (
+    <View>
+      <Text style={{ color: 'grey', marginVertical: 10 }}>{books === '' ? '' : numBooks}</Text>
+    </View>
+  )
 
-  const saveBook = (book) => {
-    if (book.volumeInfo.title != '') {
-    const newBookRef = push(ref(db, '/items')).key;
-    setBookToSave({title: book.volumeInfo.title, authors: book.volumeInfo.authors[0], abstract: book.volumeInfo.description, key: newBookRef});
-    set(ref(db, '/items/' + newBookRef), bookToSave);
-    setBookToSave({title: '', authors: '', abstract: '', key: ''});
-    }
-  }
 
 return (
   <View>
     <Searchbar
       style={{marginTop: '5%'}}
       mode='bar'
-      //theme={ { colors: { surface: 'green' } }} // this is not working
       placeholder="Type here..."
       onChangeText={input => setInput(input)}
       value={input}
@@ -67,10 +51,10 @@ return (
       placeholderTextColor="rgb(116, 144, 147)"
     />
 
-   
     <FlatList
     data={books}
     keyExtractor={(item) => item.id}
+    ListHeaderComponent={renderListHeader}
     renderItem={({ item }) => (
       <Card onPress={() => navigation.navigate('BookDetails', { link: item.selfLink })}>
         <Card.Cover
@@ -81,9 +65,7 @@ return (
           <Title>{item.volumeInfo.title}</Title>
           <Paragraph>{item.volumeInfo.authors?.join(', ')}</Paragraph>
         </Card.Content>
-        <Card.Actions>
-          <Button onPress={() => saveBook(item)}>Save book</Button>
-        </Card.Actions>
+
       </Card>
     )} 
     />
