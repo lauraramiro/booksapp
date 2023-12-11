@@ -15,7 +15,6 @@ export default function Bookdetails( { route } ) {
 
   const { link } = route.params;
   const [book, setBook] = useState({});
-  //const [exists, setExists] = useState(false);
 
 
   useEffect(() => {
@@ -29,23 +28,16 @@ export default function Bookdetails( { route } ) {
 
 
   const addBook = async() => {
-    await checkBook();
-    /*
-    if (exists === 'exists') {
-      Alert.alert('Book Is Already Saved');
-    } else {*/
-        try{
-          const title = book.title;
-          push(ref(database, 'books/'), {
-              book, title, rating: ''
-          });
-        } catch (error) {
-          console.error('Firebase error: ', error.code, error.message);
-        }
-        Alert.alert('Book saved!');  
-        
-    //}
-
+    checkBook();
+    try{
+      const title = book.title;
+      push(ref(database, 'books/'), {
+          book, title, rating: ''
+      });
+    } catch (error) {
+      console.error('Firebase error: ', error.code, error.message);
+    }
+    Alert.alert('Book saved!');  
 };
 
 
